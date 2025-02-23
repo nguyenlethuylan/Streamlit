@@ -1,5 +1,35 @@
 import streamlit as st
+import pathlib
+from PIL import Image
+import cv2
 
+# Load the image correctly
+image_path = "/home/lannguyen/Documents/streamlit/align2seq/source/image.png"
+
+# Using OpenCV but converting to RGB for Streamlit
+img = cv2.imread(image_path)
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+
+# Display image in Streamlit
+st.image(
+    img,
+    caption="This describes the alignment of 2 sequences",
+    width=800,
+)
+
+# Function to load CSS from a given file path
+def load_css(css_file_path):
+    try:
+        with open(css_file_path, "r") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.error(f"CSS file not found: {css_file_path}")
+
+# Load the external CSS
+css_path = pathlib.Path("/home/lannguyen/Documents/streamlit/align2seq/source/style.css")
+load_css(css_path)
+
+# Sequence Alignment Function
 def seqAlign(seq1, seq2):
     len1, len2 = len(seq1), len(seq2)
     
@@ -20,27 +50,27 @@ def seqAlign(seq1, seq2):
         else:
             alignment.append(' ')
     
-    return type1, type2, seq1, seq2, ''.join(alignment), match_count, maxlength # The join() method takes all items in an iterable and joins them into one string.
+    return type1, type2, seq1, seq2, ''.join(alignment), match_count, maxlength
 
 st.title("Sequence Alignment")  # Displays the main title of the app.
 
-seq1 = st.text_input("Enter Sequence 1:") # Takes input for DNA/RNA sequences.
+seq1 = st.text_input("Enter Sequence 1:")  # Takes input for DNA/RNA sequences.
 seq2 = st.text_input("Enter Sequence 2:")
 
-if st.button("Align Sequences"): # Triggers the alignment function when clicked.
+if st.button("Align Sequences", key="click"):  # Triggers the alignment function when clicked.
     if seq1 and seq2:
         type1, type2, aligned_seq1, aligned_seq2, alignment, match_count, maxlength = seqAlign(seq1, seq2)
         
-        st.write(f"**Sequence 1 is {type1}**") # Displays sequence type and statistics.
+        st.write(f"**Sequence 1 is {type1}**")  # Displays sequence type and statistics.
         st.write(f"**Sequence 2 is {type2}**")
         st.write(f"Length of Sequence 1: {len(seq1)}")
         st.write(f"Length of Sequence 2: {len(seq2)}")
         
-        st.text("Alignment result:") # Shows the aligned sequences in a formatted way.
+        st.text("Alignment result:")  # Shows the aligned sequences in a formatted way.
         st.text(aligned_seq1)
         st.text(alignment)
         st.text(aligned_seq2)
         
         st.write(f"**Total matching nucleotides: {match_count}/{maxlength}**")
     else:
-        st.warning("Please enter both sequences!") # Alerts if input is missing.
+        st.warning("Please enter both sequences!")  # Alerts if input is missing.
