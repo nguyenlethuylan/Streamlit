@@ -1,14 +1,10 @@
 import streamlit as st
 import pathlib
-from PIL import Image
-import cv2
+from PIL import Image 
 
-# Load the image correctly
+# Load the image
 image_path = "/home/lannguyen/Documents/streamlit/align2seq/source/image.png"
-
-# Using OpenCV but converting to RGB for Streamlit
-img = cv2.imread(image_path)
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+img = Image.open(image_path)
 
 # Display image in Streamlit
 st.image(
