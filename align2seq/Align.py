@@ -4,23 +4,26 @@ from PIL import Image
 import os
 
 # Load the image
-image_path = pathlib.Path.cwd() / "source" / "image.png"
-if image_path.exists():
-    img = Image.open(image_path)
-    st.image(img, caption="This describes the alignment of 2 sequences", width=800)
-else:
-    st.warning("Image file not found!")
+image_path = os.path.join(os.path.dirname(__file__), "source", "image.png")
+img = Image.open(image_path)
+
+# Display image in Streamlit
+st.image(
+    img,
+    caption="This describes the alignment of 2 sequences",
+    width=800,
+)
 
 # Function to load CSS from a given file path
 def load_css(css_file_path):
-    if css_file_path.exists():
+    try:
         with open(css_file_path, "r") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    else:
+    except FileNotFoundError:
         st.error(f"CSS file not found: {css_file_path}")
 
-# Load external CSS
-css_path = pathlib.Path.cwd() / "source" / "style.css"
+# Load the external CSS
+css_path = pathlib.Path(__file__).parent / "source" / "style.css"
 load_css(css_path)
 
 # Sequence Alignment Function
@@ -40,10 +43,10 @@ def seqAlign(seq1, seq2):
 
 # Function to split long sequences into multiple lines
 def split_sequence(seq, line_length=50):
-    return [seq[i:i+line_length] for i in range(0, len(seq), line_length)]
+    return [seq[i:i+line_length] for i in range(0, len(seq), line_length)] 
 
 # Streamlit UI
-st.title("Sequence Alignment Tool")
+st.title("Pairwise Sequence Alignment")
 
 seq1 = st.text_area("Enter Sequence 1:")
 seq2 = st.text_area("Enter Sequence 2:")
